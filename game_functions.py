@@ -29,9 +29,10 @@ def check_evets(ai_settings, screen, ship, bullets):
         #         ship.rect.centerx-=1
 
 
-def update_screen(ai_settings, screen,ship,bullets):
+def update_screen(ai_settings, screen,ship,alien,bullets):
     screen.fill(ai_settings.bg_color)
     ship.blitme()
+    alien.blitme()
     for bullet in bullets.sprites():
         bullet.draw_bullet()
 
