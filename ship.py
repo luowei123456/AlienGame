@@ -15,6 +15,9 @@ class Ship():
         self.moving_right=False
         self.moving_left=False
 
+        self.shooting=False
+        self.shooting_count=0
+
         self.ai_settings=ai_settings
         self.center = float(self.rect.centerx)
 
