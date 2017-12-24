@@ -13,3 +13,4 @@ class Settings():
         self.bullet_color=60,60,60
 
         self.bullet_speed_factor=1
+        self.bullet_shoot_factor=30
