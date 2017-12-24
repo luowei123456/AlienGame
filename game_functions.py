@@ -15,6 +15,10 @@ def check_evets(ai_settings, screen, ship, bullets):
                 ship.moving_right = True
             elif event.key==pygame.K_LEFT:
                 ship.moving_left=True
+            elif event.key==pygame.K_UP:
+                ship.moving_up=True
+            elif event.key==pygame.K_DOWN:
+                ship.moving_down=True
             elif event.key==pygame.K_SPACE:
                 new_bullet=Bullet(ai_settings,screen,ship)
                 bullets.add(new_bullet)
@@ -24,6 +28,10 @@ def check_evets(ai_settings, screen, ship, bullets):
                 ship.moving_right=False
             elif event.key==pygame.K_LEFT:
                 ship.moving_left=False
+            elif event.key==pygame.K_UP:
+                ship.moving_up=False
+            elif event.key==pygame.K_DOWN:
+                ship.moving_down=False
 
         # elif event.key==pygame.K_LEFT:
         #         ship.rect.centerx-=1
