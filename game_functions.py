@@ -1,7 +1,7 @@
 import sys
 
 from bullet import Bullet
-from alien import Alien
+from alien import Alien,Alien_1
 from time import sleep
 import pygame
 
@@ -36,8 +36,7 @@ def check_evets(ai_settings, screen, ship, bullets):
                 ship.shooting=False
 
 
-        # elif event.key==pygame.K_LEFT:
-        #         ship.rect.centerx-=1
+
     if ship.shooting:
         if ship.shooting_count == 0:
             new_bullet = Bullet(ai_settings, screen, ship)
@@ -50,11 +49,12 @@ def check_evets(ai_settings, screen, ship, bullets):
 
 
 
-def update_screen(ai_settings, screen,ship,aliens,bullets):
+def update_screen(ai_settings, screen,ship,aliens,bullets,aliens_1):
     screen.fill(ai_settings.bg_color)
     ship.blitme()
 
     aliens.draw(screen)
+    aliens_1.draw(screen)
 
     for bullet in bullets.sprites():
         bullet.draw_bullet()
@@ -83,26 +83,64 @@ def check_fleet_edges(ai_settings,aliens):
             change_fleet_direction(ai_settings,aliens)
             break
 
-def change_fleet_direction(ai_setttings,aliens):
+def change_fleet_direction(ai_settings,aliens):
     for alien in aliens.sprites():
-        alien.rect.y+=ai_setttings.fleet_drop_speed
-    ai_setttings.fleet_direction*=-1
-
-def ship_hit(ai_settings,stats,screen,ship,aliens,bullets):
-    stats.ship_left-=1
-    aliens.empty()
-    bullets.empty()
-
-    create_fleet(ai_settings,screen,aliens)
-    ship.center_ship()
-    sleep(0.5)
-
+        alien.rect.y+=ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction*=-1
 
 def update_aliens(ai_settings,screen,ship,aliens):
     check_fleet_edges(ai_settings,aliens)
     aliens.update()
     if pygame.sprite.spritecollideany(ship,aliens):
         create_fleet(ai_settings,screen,aliens)
+
+
+
+def create_fleet_1(ai_settings,screen,aliens_1):
+    alien_1=Alien_1(ai_settings,screen)
+    alien_1_width=alien_1.rect.width
+    alien_1_height=alien_1.rect.height
+    number_aliens_1_x=2
+    number_aliens_1_y=2
+
+    for row_number in range(number_aliens_1_y):
+        for alien_1_number in range(number_aliens_1_x):
+            alien_1=Alien_1(ai_settings,screen)
+            alien_1.x=alien_1_width+2*alien_1_width*alien_1_number
+            alien_1.y=alien_1_height+2*alien_1_height*row_number
+            alien_1.rect.x=alien_1.x
+            alien_1.rect.y=alien_1.y
+            aliens_1.add(alien_1)
+
+def change_fleet_direction_1(ai_settings,aliens_1):
+    for alien_1 in aliens_1.sprites():
+        alien_1.rect.y+=ai_settings.fleet_drop_speed
+    ai_settings.fleet_direction*=-1
+
+def check_fleet_edges_1(ai_settings,aliens_1):
+    for alien_1 in aliens_1.sprites():
+        if alien_1.check_edges_1():
+            change_fleet_direction_1(ai_settings,aliens_1)
+            break
+
+def update_aliens_1(ai_settings,screen,ship,aliens_1):
+    check_fleet_edges_1(ai_settings,aliens_1)
+    aliens_1.update()
+    if pygame.sprite.spritecollideany(ship,aliens_1):
+        create_fleet_1(ai_settings,screen,aliens_1)
+
+
+def ship_hit(ai_settings,stats,screen,ship,aliens,bullets,aliens_1):
+    stats.ship_left-=1
+    aliens_1.empty()
+    aliens.empty()
+    bullets.empty()
+
+    create_fleet(ai_settings,screen,aliens)
+    create_fleet_1(ai_settings,screen,aliens_1)
+    ship.center_ship()
+    sleep(0.5)
+
 
 def update_bullets(aliens,bullets):
     collisions=pygame.sprite.groupcollide(bullets,aliens,True,True)
