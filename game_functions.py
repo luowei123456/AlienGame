@@ -98,11 +98,11 @@ def ship_hit(ai_settings,stats,screen,ship,aliens,bullets):
     sleep(0.5)
 
 
-def update_aliens(ai_settings,screen,ship,aliens):
+def update_aliens(ai_settings,stats,screen,ship,aliens,bullets):
     check_fleet_edges(ai_settings,aliens)
     aliens.update()
     if pygame.sprite.spritecollideany(ship,aliens):
-        create_fleet(ai_settings,screen,aliens)
+        ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
 
 def update_bullets(aliens,bullets):
     collisions=pygame.sprite.groupcollide(bullets,aliens,True,True)

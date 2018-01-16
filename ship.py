@@ -10,7 +10,7 @@ class Ship():
         self.screen_rect=screen.get_rect()
 
         self.rect.centerx=self.screen_rect.centerx
-        self.rect.centery=self.screen_rect.centery
+        # self.rect.centery=self.screen_rect.centery
         self.rect.bottom=self.screen_rect.bottom
 
         self.moving_right=False
@@ -48,3 +48,5 @@ class Ship():
 
     def center_ship(self):
         self.center=self.screen_rect.centerx
+        self.rect.bottom=self.screen_rect.bottom
+        self.centery=self.rect.centery
