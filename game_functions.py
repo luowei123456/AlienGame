@@ -62,31 +62,46 @@ def update_screen(ai_settings, screen,ship,aliens,bullets):
     pygame.display.flip()
 
 def create_fleet(ai_settings,screen,aliens):
+    fleet_data=load_data('alienData.txt')
     alien=Alien(ai_settings,screen)
     alien_width=alien.rect.width
     alien_height=alien.rect.height
-    number_aliens_x=3
-    number_aliens_y=3
+
+    number_aliens_x=2
+    number_aliens_y=2
 
     for row_number in range(number_aliens_y):
         for alien_number in range(number_aliens_x):
             alien=Alien(ai_settings,screen)
+
             alien.x=alien_width+2*alien_width*alien_number
             alien.y=alien_height+2*alien_height*row_number
+
             alien.rect.x=alien.x
             alien.rect.y=alien.y
+
+            t,s = fleet_data.popitem()
+            alien.type = t.strip()
+            alien.h_speed = float(s[0])
+            alien.v_speed = float(s[1])
+
             aliens.add(alien)
 
 def check_fleet_edges(ai_settings,aliens):
     for alien in aliens.sprites():
-        if alien.check_edges():
-            change_fleet_direction(ai_settings,aliens)
+        if alien.check_edge_z() and 'z' == alien.type:
+            change_fleet_direction(alien)
             break
 
-def change_fleet_direction(ai_setttings,aliens):
-    for alien in aliens.sprites():
-        alien.rect.y+=ai_setttings.fleet_drop_speed
-    ai_setttings.fleet_direction*=-1
+def change_fleet_direction(alien):
+    alien.rect.y+=alien.v_speed
+    alien.direction*=-1
+
+def remove_aliens(aliens):
+    for al in aliens.copy():
+        if al.check_edges():
+            aliens.remove(al)
+    # print(len(aliens))
 
 def ship_hit(ai_settings,stats,screen,ship,aliens,bullets):
     stats.ship_left-=1
@@ -101,6 +116,9 @@ def ship_hit(ai_settings,stats,screen,ship,aliens,bullets):
 def update_aliens(ai_settings,stats,screen,ship,aliens,bullets):
     check_fleet_edges(ai_settings,aliens)
     aliens.update()
+
+    remove_aliens(aliens)
+
     if pygame.sprite.spritecollideany(ship,aliens):
         ship_hit(ai_settings, stats, screen, ship, aliens, bullets)
 
@@ -111,3 +129,12 @@ def update_bullets(aliens,bullets):
         if bullet.rect.bottom<=0:
             bullets.remove(bullet)
     # print(len(bullets))
+
+def load_data(filename):
+    result={}
+    f=open(filename)
+    for line in f.readlines():
+        h_speed,v_speed,f_type=line.split(' ')
+        print(h_speed,v_speed,f_type)
+        result[f_type]=[h_speed,v_speed]
+    return result
