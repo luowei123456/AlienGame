@@ -4,6 +4,7 @@ from bullet import Bullet
 from alien import Alien
 from time import sleep
 import pygame
+import random
 
 def check_events(ai_settings, screen,stats,play_button, ship, aliens,bullets):
 
@@ -74,33 +75,25 @@ def update_screen(ai_settings, screen,stats,ship,aliens,bullets,play_button):
 
     pygame.display.flip()
 
+def generate_position(ai_settings, alien):
+    alien.x=random.randint(0,ai_settings.screen_width/2)
+    alien.y=random.randint(0,ai_settings.screen_height/2)
+
 
 def create_fleet(ai_settings,screen,aliens):
     fleet_data=load_data('alienData.txt')
 
-    alien = Alien(ai_settings, screen)
-    alien_width=alien.rect.width
-    alien_height=alien.rect.height
+    for key,value in fleet_data.items():
 
-    number_aliens_x=2
-    number_aliens_y=2
+        alien=Alien(ai_settings,screen)
 
-    for row_number in range(number_aliens_y):
-        for alien_number in range(number_aliens_x):
-            alien=Alien(ai_settings,screen)
+        generate_position(ai_settings,alien)
 
-            alien.x=alien_width+2*alien_width*alien_number
-            alien.y=alien_height+2*alien_height*row_number
+        alien.type = key.strip()
+        alien.h_speed = float(value[0])
+        alien.v_speed = float(value[1])
 
-            alien.rect.x=alien.x
-            alien.rect.y=alien.y
-
-            t,s = fleet_data.popitem()
-            alien.type = t.strip()
-            alien.h_speed = float(s[0])
-            alien.v_speed = float(s[1])
-
-            aliens.add(alien)
+        aliens.add(alien)
 
 def check_fleet_edges(ai_settings,aliens):
     for alien in aliens.sprites():
@@ -138,6 +131,9 @@ def update_aliens(ai_settings,screen,stats,ship,aliens,bullets):
     aliens.update()
 
     remove_aliens(aliens)
+
+    if(len(aliens)==0):
+        create_fleet(ai_settings,screen,aliens)
 
     if pygame.sprite.spritecollideany(ship,aliens):
         ship_hit(ai_settings,screen,stats,ship,aliens,bullets)
